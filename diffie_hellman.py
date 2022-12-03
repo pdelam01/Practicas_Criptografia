@@ -4,17 +4,15 @@
 # a random appropriate generator g for G = Z/pZ∗
 #
 # Common key K = g^(a*b) mod p
-# Pub key = g^a mod p
-# Priv key = a / {2, ..., p-2}
+# Public key = g^a mod p
+# Private key = a / {2, ..., p-2}
 
-
-import random
+import secrets
 import math
 import pi
 from funcs import (
-    blocks_from_bytes, power_mod, compute_block_size, bytes_from_block,
-    estimate_k, bitlength, coprimes, random_probable_prime,
-    multiplicative_inverse, random_odd_number_nbits, miller_rabin
+    power_mod, estimate_k, random_probable_prime,
+    random_odd_number_nbits, miller_rabin
 )
 
 def diffie_primes(nlen: int, tries: int = 30000) -> int:
@@ -52,7 +50,6 @@ def diffie_primes(nlen: int, tries: int = 30000) -> int:
         q = random_probable_prime(random_odd_number_nbits(q_size),
                                   k = k,
                                   limit = tries)
-
         p = (2 * q) + 1 
         if(miller_rabin(p, k)):
             valid_p = True
@@ -75,9 +72,9 @@ def generate_generator(p: int) -> int:
     int
         Generator for G = Z/pZ*
     '''
-    g = random.randint(2, p - 1)
+    g = secrets.choice(range(2, p)) # [2, p), since we want [2, p-1]
     while not is_generator(g, p):
-        g = random.randint(2, p - 1)
+        g = secrets.choice(range(2, p))
 
     return g
 
@@ -128,12 +125,9 @@ def rfc_3526_DH(n: int)-> tuple[int, int]:
         raise Exception("El número de bits debe ser 1536") 
 
     p = 2**1536 - 2**1472 - 1 + 2**64 * ( math.floor(2 ** 1406 * pi.approximate_pi(len(str(2**1406))-1))  + 741804 )
-
     g = 2
 
     return p,g
-
-
 
 
 # Given p = 7883, g = 2 and a user with g^ai ≡1876 mod p, form a common key with that user
@@ -153,7 +147,7 @@ def generate_key(p: int, ga_a: int) -> int:
     int
         Private common key
     '''
-    a_b = random.randint(2, p - 2)
+    a_b = secrets.choice(range(2, p-1)) # [2, p-1), since we want [2, p-2]
     k = power_mod(ga_a, a_b, p)
 
     return k
