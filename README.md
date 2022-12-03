@@ -1,4 +1,4 @@
-# Practicas_Criptografia
+# Practicas_Criptografia - Master en Investigaci
 
 ## Public key cryptography
 Exercises about different public key algorithms implemented using Python language.
