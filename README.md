@@ -1,6 +1,6 @@
-# Practicas_Criptografia - Master en Investigaci
+# Practicas_Criptografia - Master en Investigación en Ciberseguridad
 
-## Public key cryptography
+## Public key cryptography 
 Exercises about different public key algorithms implemented using Python language.
 
 ### RSA Cipher
