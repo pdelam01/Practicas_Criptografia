@@ -67,16 +67,18 @@ def rsa_verify(by: bytes, n: int, e: int, signature: bytes) -> bool:
         True if the signature is valid, False otherwise
 
     '''
-    print("\nDecrypted: ",rsa_decrypt(signature, n, e))
     return rsa_decrypt(signature, n, e) == by
 
 
 if __name__ == "__main__":
-    # Bob's public key
-    n = 123355434931394847582156130589346765195239858952662033973669968405220821412574991703109181733654539246644904338901352138362092833002288793510559272266372536290821137928735835297624136288059785492583366524665701693180230633068234558088660840330170848973749265206460835623134857700697302798342737456620402409063
+    # My keys
+    n = 110477620934049393733275265425319715013384221791352610600040838995728481009667690503849981506344012764292009379787793009565139234703193116888335807677802785350021945337615918588620239492464432226348696954426754149567553978837124726589912929545140618195782211815916207778575351484388869984100139595053059887809
     e = 65537
-    # My private key
-    d = 17208298266325988952571337368960832188623607980442350120705618501692490442162637011651952928363009349494243761117922260068307423533979668090110058864439114949608358158668299897624131119416547961751622408610791793739698108332224032333596259924479570716158944433163524524645330628485919309011531489979608391873
+    d = 2049565499168129777286731315332578851190009455137091246998636700067237512055596589777747977195527140179110549322143598284881544565562948633851640338052222830151760952442709461557167119469500215039089254706556629629336762608475917540234934246658761072607271998085435334103730322596575358091993913710759490913
+
+    # Bob's keys
+    n_ = 137240983915996962747909454484640658542329656056449401370891990025072346702917945425463397482231359266614646060111542095646286224283115300273103159970060217155569265862077406621057638854015677632691187303616523985260804276248741993354084069774341050814080965415297141189501657346954323426277281084454908433239
+    e_ = 65537
 
     # My message
     message = b"Hello World"
@@ -85,21 +87,28 @@ if __name__ == "__main__":
     hashed_message = sha256(message)
     print("My hashed message:", hashed_message)
 
-    # Sign the message
+    # Encrypt the message
+    encrypted_message = rsa_encrypt(message, n_, e_)
+    print("\nSender's encrypted message:", encrypted_message)
+
+    # Sign the message using my private key
     signature = rsa_sign(hashed_message, n, d)
     print("\nMy signature:", signature)
     
     # ============================ RSA Signature Verification =============================== #
-    test_message = b"hola buenas tardes"
-    test_hashed_message = sha256(test_message)
 
     # Hash of the partner's message
-    hashed_messageBob = b'\xce\x94I\xa0\x8bkk\x8fs\xd0V\x0c\xcf\xe0C\xb5?&\xa2)\x9b\xd8\xc3!\xe51\xf4\xa0\xc5\x7fK)'
+    encrypted_messageBob = b'\x11\xb0\x9e\xde\xeb6s\xbe\xfa\xb9\xc3\x0cx\xbb8\x9e\x94\x0e\xb2mj \x98\x1b\xd4`\xc9\x81v>lX\x81;~\xb1\x81\xc8\xd9\xc4N\x90\xc1\xc7o\xb5\x95\xf0\xa8|\xc5\xd9\xec\xb7\x96o:\xd0{Bb\x17\xde\xd2=\xad\x12{9\xf9MO\xc9\xcb2\xba\x8f)\xd8\x96t\x189H\xe4\xad\x8f\x14\xf5%\x8c\xc0\x19\xfbO\x0cIU\x82R\xe8ea\xaa=g\x1a\xe4\xd2\\\xe0@\xb6\xfb\xdb\x7f\xefT\xa6W\xd6j^H\x17\x82R\xfda\x04\x16\x07\xc0\xa5\x1b\x85\xc70\x9e\xff\xe9\x01\xba\xf1XcR\xc4\xa1x\xae,\x8b\x94\xf8)\xaa\x9d\xa8\xb9nU\x84\x94\xd4\x87\xc9\x8e0\x93\x82\x17Z\xeb\xecW\xc7u\xc90\x0b\r$x\x98l\xc5\x1e\x91lk)\xf3\xb6M(@\xf5\x13$DP\x15\xa4\xab\xf8\xbd\xe9j\xf2\xfb\x99\xc2A1:\xf5\xae\x1e\x01\x89\x02\x15P "\xee\xdc\x8eM\xb62\xe4\xe9}zV\x8a\xa4H\x18\x1dAp\x83\x8d\x86o\xcc\x0f\xfd\xdb\x7f\x97\xfa\xc8'
+    
     # Signature of the partner's message
-    signatureBob = b'!gu~M.A\x9b\x03\x1e\x93\x02\xc6\xf5n\x85$f\x9d\xe3\xfa\xde\xb2D\xef\x82\xfb\xbb\xe5H]\ra\xa4\x8b\xc4\xb1\xb0\xd3\xa1\xde\x18\xef\xeb\xfa\x0bK\x96L\xd4cI\x02\xa1\xaa\xcd\x99KQSV\x81\xe6b\x9ec\n\xe9~\xab,\x7f\xfb\xd7\xedY.dR\xcf\x95\x95C\xd5\xe6\xe7\x06\xecl\xc8\xc4\xa2/L\xcf\x97Plf\xfa5(M\xf53\xd3\x0cd\xaa1\xb2\xc9\x1f\x00\x8a\xd3 5\x1f\xc8\xed&O\x0c\x89%\xd9"\x11>^\xf4_Y\xbc\x1bF\x06\xf1\xabv\x9b\xb5#\xfa\xca\x1e+\x96\xb4\t*\xa5\x8b\n*0<<\xd9o\x12\x8dI\xd4f\xce$\xeb\xb3\x98\xfey\x06\x8e\x06\x8bs\x90\x1d\xaf\xff\x9dS\x10\x8c_\xd5\x94Y\n\x0bG\xc9\x99\xfd/_\x0f\x80\x88\x97\xca\xa0\x05\xf1/\x1a\x8d[F\x7f\xb2_\x84\x06d!\xfd\xd4;uBMk.1q\xb1^\xf1\xaf\xe2\xf2A\xbbe\xf32\x8f7\xd9\xc4\xa6\x1d\x89\x81\x17^x+\xb1\xc8\x15>{'
-    print("\nBob's hashed message:", hashed_messageBob)
+    signatureBob = b'\x1b\x80\x05U\x97\x04\xe1\xfa\xcd%\xa7eX\xc1\xab\xe1\x01L\xed*m"\xdc0U\xa5\xc5\xab\xf5\x9c\x8a\x19:\x98o\xe9\xd7\x04hr<\xb48\x19\rYWB\x832"\xab@\xab\xbe\x01\xb1\r\xe1\xbb~?\x0e\x9ci\x8ch\x97\xfd\x16\x87Rs\x12cM\xa5\xdctx\x81\xec\x818\x99.\xf4W\xec\xcb}\xc1\xa83L\x93\xa3\xdd\xc4\xca\xd0\x00\xa8\xff\x8c2\x0c\xdf\xf4y\x82\x0f\x94\xda\t\x93\x84)GK\x1a\xdb\xfd\xf0+p@\x95v\xe4\xaaM\x84\xb1\x84\x17\x90Y\xc2\nH\xe3\xb4\xe1\x1c\xd8\xc2$\x9f&\xc2\xf3\xed\x1c~n\x80\xe4\xed\xa9\xd62\x9e\x07\x8f#\xdcRQ\xbb\xdf\x1c\xa8\x1fF\x05\x0eC\x9c~\xf6\x08f\xe2-\x1e-\xe6\xa2\xf2\xf7\xc05\x1bg\x1c\x89\'\xfb@\xa3\xb7\x13rd\x05\x92X\xb2v\xc5C\xf6\xb8/R\x8f\x80\xe6\x1b}\xa9\xe7\x0c\xb2\x98\x1c\xa5\xf6\x90\xee\x03]\xc27\xb4}\x12\x84*\x93\x13.v\x86\x12\xc2M\xb6\xf9\x8a\xf4\x9f\x99\xb3\xe2'
+    print("\nBob's encrypted message:", encrypted_messageBob)
     print("\nBob's signature:", signatureBob)
 
+    # Decrypt the partner's message
+    decrypted_messageBob = rsa_decrypt(encrypted_messageBob, n, d)
+    print("\nDecrypted Bob's message:", decrypted_messageBob)
+
     # Verify the signature
-    verified = rsa_verify(hashed_messageBob, n, e, signatureBob)
+    verified = rsa_verify(sha256(rsa_decrypt(encrypted_messageBob, n, d)), n_, e_, signatureBob)
     print("\nVerified:", verified)
