@@ -45,7 +45,7 @@ def elgamal_keygen(p: int, g: int) -> tuple[int, int]:
     tuple[int, int]
         Public and private key
     '''
-    ai = secrets.choice(range(2, p-1)) # [2, p-1), since we want [2, p-2]
+    ai = secrets.choice(range(2, p-3)) # [2, p-3), since we want [2, p-2]
     pb = generate_public_key(p, g, ai)
     return pb, ai
 
@@ -118,7 +118,7 @@ def elgamal_encrypt_aux(by: bytes, g: int, pk_bob: int, p: int, extract_blocks_s
     encryptions = []
 
     for block in blocks:
-        key = secrets.choice(range(2, p-1))
+        key = secrets.choice(range(2, p-3))
         C1 = power_mod(g, key, p)
         C2 = (block*power_mod(pk_bob, key, p))%p
         encryptions.append((C1, C2))
